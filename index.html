@@ -1,23 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>poop Page</title>
-    <style>
-        body {
-            background-color: green;
-            color: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-size: 5rem;
-            font-family: sans-serif;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Welcome to Urlaun</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      background: linear-gradient(135deg, #0d001a, #1a001f, #000);
+      font-family: 'Orbitron', sans-serif;
+      color: white;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1, p {
+      background: linear-gradient(90deg, #9d00ff, #000000, #9d00ff);
+      background-size: 200% auto;
+      color: #fff;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientMove 5s linear infinite;
+    }
+
+    h1 {
+      font-size: 3.5em;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 1.5em;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
+  </style>
 </head>
 <body>
-    poop 
+  <canvas id="bgCanvas"></canvas>
+  <div class="content">
+    <div>
+      <h1>Welcome to Urlaun</h1>
+      <p>
+        What is Urlaun, you may think? It’s a server-side on Roblox made by <strong>Stanny</strong> and <strong>TotallyNotDemon</strong>.<br>
+        Features: Guns, Flying, Morphing, Speed, Cmds, etc.<br>
+        To buy Urlaun, DM <strong>Christwarden</strong> on Discord!
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("bgCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let lines = [];
+    const numLines = 80;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    for (let i = 0; i < numLines; i++) {
+      lines.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        length: 100 + Math.random() * 200,
+        angle: Math.random() * Math.PI * 2,
+        speed: 0.3 + Math.random(),
+        width: 0.5 + Math.random() * 2
+      });
+    }
+
+    function draw() {
+      let gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      gradient.addColorStop(0, "#0d001a");
+      gradient.addColorStop(1, "#1a001f");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+      ctx.lineCap = "round";
+
+      for (let line of lines) {
+        const dx = Math.cos(line.angle) * line.length;
+        const dy = Math.sin(line.angle) * line.length;
+
+        ctx.lineWidth = line.width;
+        ctx.beginPath();
+        ctx.moveTo(line.x, line.y);
+        ctx.lineTo(line.x + dx, line.y + dy);
+        ctx.stroke();
+
+        line.x += Math.cos(line.angle) * line.speed;
+        line.y += Math.sin(line.angle) * line.speed;
+
+        if (
+          line.x > canvas.width || line.x < 0 ||
+          line.y > canvas.height || line.y < 0
+        ) {
+          line.x = Math.random() * canvas.width;
+          line.y = Math.random() * canvas.height;
+        }
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+  </script>
 </body>
-</html
+</html>
